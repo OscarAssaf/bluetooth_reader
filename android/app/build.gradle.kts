@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.bluetooth_reader"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
