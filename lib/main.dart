@@ -34,7 +34,7 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen> {
-  final Map<String, BleDevice> _devices = {}; 
+  final Map<String, BleDevice> _devices = {};
   StreamSubscription<List<ScanResult>>? _scanSub;
   StreamSubscription<bool>? _isScanningSub;
   bool _isScanning = false;
@@ -73,7 +73,8 @@ class _ScanScreenState extends State<ScanScreen> {
     final supported = await FlutterBluePlus.isSupported;
     if (!supported) {
       setState(() {
-        _statusMessage = 'Bluetooth Low Energy is not supported on this device.';
+        _statusMessage =
+            'Bluetooth Low Energy is not supported on this device.';
       });
       return;
     }
@@ -86,7 +87,7 @@ class _ScanScreenState extends State<ScanScreen> {
       if (mounted) setState(() => _isScanning = scanning);
     });
 
-   //  Scan window that constantly checks for connection. BLE devices advertise at very different. Scans for 5 minutes.
+    //  Scan window that constantly checks for connection. BLE devices advertise at very different. Scans for 5 minutes.
     await FlutterBluePlus.startScan(
       timeout: const Duration(minutes: 5),
       androidUsesFineLocation: true,
@@ -120,7 +121,8 @@ class _ScanScreenState extends State<ScanScreen> {
     }
   }
 
-  Color _colorFor(SignalStrength s) { // colors based on the signal strength
+  Color _colorFor(SignalStrength s) {
+    // colors based on the signal strength
     switch (s) {
       case SignalStrength.strong:
         return Colors.green;
@@ -134,7 +136,9 @@ class _ScanScreenState extends State<ScanScreen> {
   @override
   Widget build(BuildContext context) {
     final deviceList = _devices.values.toList()
-      ..sort((a, b) => b.rssi.compareTo(a.rssi)); // strongest first  - showcases it first at the top
+      ..sort(
+        (a, b) => b.rssi.compareTo(a.rssi),
+      ); // strongest first  - showcases it first at the top
 
     return Scaffold(
       appBar: AppBar(
@@ -228,9 +232,9 @@ class _ScanScreenState extends State<ScanScreen> {
                                     Expanded(
                                       child: Text(
                                         d.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleMedium,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
@@ -253,8 +257,9 @@ class _ScanScreenState extends State<ScanScreen> {
                                     value: fraction,
                                     minHeight: 8,
                                     backgroundColor: Colors.grey.shade200,
-                                    valueColor:
-                                        AlwaysStoppedAnimation<Color>(color),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      color,
+                                    ),
                                   ),
                                 ),
                               ],

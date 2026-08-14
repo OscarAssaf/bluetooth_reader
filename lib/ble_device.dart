@@ -1,6 +1,6 @@
 /// A scanned BLE device and its most recent signal reading.
 class BleDevice {
-  final String id; 
+  final String id;
   final String name;
   final int rssi; // signal strength in measured in dBm
   final DateTime lastSeen;

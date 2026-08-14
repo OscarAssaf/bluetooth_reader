@@ -79,9 +79,12 @@ class _TrackDeviceScreenState extends State<TrackDeviceScreen> {
   Widget build(BuildContext context) {
     final points = _rssiHistory.toList();
     final spots = <FlSpot>[
-      for (var i = 0; i < points.length; i++) FlSpot(i.toDouble(), points[i].toDouble()),
+      for (var i = 0; i < points.length; i++)
+        FlSpot(i.toDouble(), points[i].toDouble()),
     ];
-    final currentColor = _latestRssi != null ? _colorForRssi(_latestRssi!) : Colors.grey;
+    final currentColor = _latestRssi != null
+        ? _colorForRssi(_latestRssi!)
+        : Colors.grey;
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.deviceName)),
@@ -91,11 +94,13 @@ class _TrackDeviceScreenState extends State<TrackDeviceScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              _latestRssi != null ? '$_latestRssi dBm' : 'Waiting for a reading…',
+              _latestRssi != null
+                  ? '$_latestRssi dBm'
+                  : 'Waiting for a reading…',
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                    color: currentColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                color: currentColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             if (_lastUpdate != null)
               Text(
@@ -118,7 +123,10 @@ class _TrackDeviceScreenState extends State<TrackDeviceScreen> {
                         maxY: -30,
                         minX: 0,
                         maxX: (_maxPoints - 1).toDouble(),
-                        gridData: const FlGridData(show: true, drawVerticalLine: false),
+                        gridData: const FlGridData(
+                          show: true,
+                          drawVerticalLine: false,
+                        ),
                         borderData: FlBorderData(show: true),
                         titlesData: FlTitlesData(
                           rightTitles: const AxisTitles(

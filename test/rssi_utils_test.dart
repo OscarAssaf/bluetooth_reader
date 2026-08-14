@@ -24,7 +24,10 @@ void main() {
     });
 
     test('respects custom min/max bounds', () {
-      expect(RssiUtils.toBarFraction(-50, minRssi: -90, maxRssi: -40), closeTo(0.8, 0.001));
+      expect(
+        RssiUtils.toBarFraction(-50, minRssi: -90, maxRssi: -40),
+        closeTo(0.8, 0.001),
+      );
     });
   });
 }
