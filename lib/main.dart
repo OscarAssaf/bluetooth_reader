@@ -1,10 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import 'ble_device.dart';
+import 'rssi_utils.dart';
+import 'track_device_screen.dart';
 
 void main() {
   runApp(const BleRadarApp());
@@ -86,7 +86,7 @@ class _ScanScreenState extends State<ScanScreen> {
       if (mounted) setState(() => _isScanning = scanning);
     });
 
-    //  Scan window that constantly checks for connection. BLE devices advertise at very different. Scans for 5 minutes.
+   //  Scan window that constantly checks for connection. BLE devices advertise at very different. Scans for 5 minutes.
     await FlutterBluePlus.startScan(
       timeout: const Duration(minutes: 5),
       androidUsesFineLocation: true,
@@ -129,15 +129,6 @@ class _ScanScreenState extends State<ScanScreen> {
       case SignalStrength.weak:
         return Colors.red;
     }
-  }
-
-  /// Maps RSSI (signal strength) with -100 to -30 dBm range.
-  /// Rank based on the strongest on the UI
-  double _barFraction(int rssi) {
-    const minRssi = -100;
-    const maxRssi = -30;
-    final clamped = rssi.clamp(minRssi, maxRssi);
-    return (clamped - minRssi) / (maxRssi - minRssi);
   }
 
   @override
@@ -207,55 +198,67 @@ class _ScanScreenState extends State<ScanScreen> {
                     itemBuilder: (context, index) {
                       final d = deviceList[index];
                       final color = _colorFor(d.strength);
-                      final fraction = _barFraction(d.rssi);
+                      final fraction = RssiUtils.toBarFraction(d.rssi);
 
                       return Card(
                         margin: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 6,
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      d.name,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${d.rssi} dBm',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          color: color,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
-                                child: LinearProgressIndicator(
-                                  value: fraction,
-                                  minHeight: 8,
-                                  backgroundColor: Colors.grey.shade200,
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(color),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => TrackDeviceScreen(
+                                  deviceId: d.id,
+                                  deviceName: d.name,
                                 ),
                               ),
-                            ],
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        d.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${d.rssi} dBm',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            color: color,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: LinearProgressIndicator(
+                                    value: fraction,
+                                    minHeight: 8,
+                                    backgroundColor: Colors.grey.shade200,
+                                    valueColor:
+                                        AlwaysStoppedAnimation<Color>(color),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
